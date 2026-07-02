@@ -1,4 +1,4 @@
-name: Docker CI
+name: Docker CI/CD
 
 on:
   push:
@@ -13,8 +13,20 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build Backend Image
-        run: docker build -t khodiyar-backend ./backend
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/khodiyar-enterprise-backend:latest ./backend
 
       - name: Build Frontend Image
-        run: docker build -t khodiyar-frontend ./client
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/khodiyar-enterprise-frontend:latest ./client
+
+      - name: Push Backend Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/khodiyar-enterprise-backend:latest
+
+      - name: Push Frontend Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/khodiyar-enterprise-frontend:latest
