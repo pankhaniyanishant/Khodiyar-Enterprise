@@ -1,0 +1,20 @@
+name: Docker CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Build Backend Image
+        run: docker build -t khodiyar-backend ./backend
+
+      - name: Build Frontend Image
+        run: docker build -t khodiyar-frontend ./client
