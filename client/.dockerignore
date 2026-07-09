@@ -1,0 +1,7 @@
+npm-debug.log
+.git
+.env
+dist
+build
+coverage
+Dockerfile
