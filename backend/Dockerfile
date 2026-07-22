@@ -1,17 +1,26 @@
-# syntax=docker/dockerfile:1.7
-
-FROM node:24
+# ---------- Builder ----------
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN --mount=type=cache,target=/root/.npm \
-    npm install --no-audit --progress=false
+RUN npm ci
 
 COPY . .
 
 RUN npx prisma generate
+
+# ---------- Production ----------
+FROM node:24-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci --omit=dev
+
+COPY --from=builder /app .
 
 EXPOSE 5000
 

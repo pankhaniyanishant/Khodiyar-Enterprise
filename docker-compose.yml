@@ -1,24 +1,57 @@
-version: '3.8'
-
 services:
 
-  frontend:
-    build: ./client
+  postgres:
+    image: postgres:16
+    container_name: khodiyar-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: khodiyar
     ports:
-      - "5173:5173"
-    command: npm run dev -- --host 0.0.0.0
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 
   backend:
     build: ./backend
+    container_name: backend
     ports:
       - "5000:5000"
 
-  nginx:
-    image: nginx:alpine
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: khodiyar
+
+      JWT_SECRET: test_secret_key
+      ACCESS_TOKEN_SECRET: test_access_secret
+      REFRESH_TOKEN_SECRET: test_refresh_secret
+      ACCESS_TOKEN_EXPIRY: 1d
+
+      RAZORPAY_KEY_ID: dummy_key
+      RAZORPAY_API_SECRET: dummy_secret
+
+      SMTP_HOST: dummy
+      SMTP_PORT: 587
+      SMTP_USER:
+      SMTP_PASS:
+      SMTP_FROM:
+
+    depends_on:
+      - postgres
+
+
+  frontend:
+    build: ./client
+    container_name: frontend
     ports:
       - "80:80"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - frontend
       - backend
+
+
+volumes:
+  postgres_data:

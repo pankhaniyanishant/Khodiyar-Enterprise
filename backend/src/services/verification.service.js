@@ -45,12 +45,12 @@ class VerificationService {
         },
       });
 
-      await emailService.sendVerificationEmail(
+      /*await emailService.sendVerificationEmail(
         user.email,
         user.name,
         token,
         otp
-      );
+      );*/
       // Return token for frontend to use in verification flow
       return { token };
     } catch (error) {
@@ -204,12 +204,12 @@ class VerificationService {
         },
       });
 
-      await emailService.sendVerificationEmail(
+     /* await emailService.sendVerificationEmail(
         verification.user.email,
         verification.user.name,
         token,
         newOtp
-      );
+      );*/
 
       return { message: 'OTP resent successfully' };
     } catch (error) {

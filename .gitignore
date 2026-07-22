@@ -1,3 +1,7 @@
-.sisyphus/
-agents architecture.md
-.kilo/
+node_modules/
+.env
+.env.*
+dist/
+build/
+coverage/
+*.log
