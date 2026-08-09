@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: pankhaniyanishant/khodiyar-enterprise-backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DB_HOST
+              value: postgres
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: khodiyar-secrets
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: khodiyar-secrets
+                  key: POSTGRES_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: khodiyar-secrets
+                  key: POSTGRES_DB
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: khodiyar-secrets
+                  key: JWT_SECRET
+            - name: ACCESS_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: khodiyar-secrets
+                  key: ACCESS_TOKEN_SECRET
+            - name: REFRESH_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: khodiyar-secrets
+                  key: REFRESH_TOKEN_SECRET
+            - name: ACCESS_TOKEN_EXPIRY
+              value: "1d"
+            - name: RAZORPAY_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: khodiyar-secrets
+                  key: RAZORPAY_KEY_ID
+            - name: RAZORPAY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: khodiyar-secrets
+                  key: RAZORPAY_API_SECRET
+            - name: SMTP_HOST
+              value: dummy
+            - name: SMTP_PORT
+              value: "587"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 5000
+      targetPort: 5000
+  type: ClusterIP
